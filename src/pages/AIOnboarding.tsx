@@ -152,7 +152,7 @@ const AIOnboarding = () => {
   };
 
   // Add AI message with streaming effect
-  const addAIMessage = async (content: string, delay: number = 1000, streamDelay: number = 30) => {
+  const addAIMessage = async (content: string, delay: number = 1000) => {
     // Add typing indicator
     const typingId = addTypingIndicator();
     
@@ -167,12 +167,9 @@ const AIOnboarding = () => {
       id: messageId,
       type: 'ai',
       content,
-      isStreaming: true,
-      streamedContent: ''
+      isStreaming: false,
+      streamedContent: content
     }]);
-
-    // Stream the message
-    await streamMessage(messageId, content, streamDelay);
   };
 
   // Add system message with loading
@@ -352,7 +349,7 @@ const AIOnboarding = () => {
 
     switch (message.type) {
       case 'ai':
-        const displayContent = message.isStreaming ? message.streamedContent : message.content;
+        const displayContent = message.content;
         return (
           <div id={`message-${message.id}`} className="flex items-start mb-6">
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center mr-3">
@@ -360,9 +357,6 @@ const AIOnboarding = () => {
             </div>
             <div className="bg-gray-100 p-4 rounded-lg rounded-tl-none max-w-[80%]">
               <p className="whitespace-pre-wrap">{displayContent}</p>
-              {message.isStreaming && (
-                <span className="inline-block w-2 h-5 bg-gray-400 ml-1 animate-pulse"></span>
-              )}
             </div>
           </div>
         );
