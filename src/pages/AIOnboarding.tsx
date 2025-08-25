@@ -516,7 +516,7 @@ const AIOnboarding = () => {
 
       <main className="flex-1 p-6 flex flex-col">
         <div className="max-w-[80%] mx-auto w-full flex-1 flex flex-col">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col h-[1000px]">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col max-h-[80%]">
             <div 
               ref={chatContainerRef} 
               className="flex-1 overflow-y-auto mb-6 min-h-0" 
