@@ -515,11 +515,11 @@ const AIOnboarding = () => {
       </div>
 
       <main className="flex-1 p-6 flex flex-col">
-        <div className="max-w-[80%] mx-auto w-full flex-1 flex flex-col max-h-full">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col h-full min-h-0">
+        <div className="max-w-[80%] mx-auto w-full flex-1 flex flex-col">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col h-[600px]">
             <div 
               ref={chatContainerRef} 
-              className="flex-1 overflow-y-auto mb-6 min-h-0 max-h-full" 
+              className="flex-1 overflow-y-auto mb-6 min-h-0" 
             >
               {messages.map((message, index) => (
                 <div key={message.id}>
@@ -531,7 +531,7 @@ const AIOnboarding = () => {
 
             {/* Edit Message Input */}
             {showEditInput && (
-              <form onSubmit={handleEditSubmit} className="mt-4 flex items-center">
+              <form onSubmit={handleEditSubmit} className="flex items-center flex-shrink-0">
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3 flex-shrink-0">
                   <span className="font-medium text-gray-600">JD</span>
                 </div>
