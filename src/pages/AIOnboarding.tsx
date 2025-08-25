@@ -89,7 +89,7 @@ const AIOnboarding = () => {
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' });
     }
   };
 
@@ -97,17 +97,24 @@ const AIOnboarding = () => {
   const scrollToMessage = (messageId: string) => {
     const messageElement = document.getElementById(`message-${messageId}`);
     if (messageElement && chatContainerRef.current) {
-      // Scroll the message to the top of the container
-      messageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Scroll the message to the top of the container with more precise control
+      const containerRect = chatContainerRef.current.getBoundingClientRect();
+      const messageRect = messageElement.getBoundingClientRect();
+      const scrollTop = chatContainerRef.current.scrollTop + (messageRect.top - containerRect.top);
+      
+      chatContainerRef.current.scrollTo({
+        top: scrollTop,
+        behavior: 'smooth'
+      });
     }
   };
 
   useEffect(() => {
-    // Always scroll to bottom when new messages are added
-    const timer = setTimeout(() => {
-      scrollToBottom();
-    }, 100); // Small delay to ensure DOM is updated
+    // Always scroll to bottom when new messages are added, with immediate effect for better UX
+    scrollToBottom();
     
+    // Also scroll after a small delay to ensure DOM is fully updated
+    const timer = setTimeout(scrollToBottom, 50);
     return () => clearTimeout(timer);
   }, [messages]);
 
@@ -508,11 +515,11 @@ const AIOnboarding = () => {
       </div>
 
       <main className="flex-1 p-6 flex flex-col">
-        <div className="max-w-[80%] mx-auto w-full flex-1 flex flex-col">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col flex-1 min-h-0">
+        <div className="max-w-[80%] mx-auto w-full flex-1 flex flex-col max-h-full">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col h-full min-h-0">
             <div 
               ref={chatContainerRef} 
-              className="flex-1 overflow-y-auto mb-6 min-h-0" 
+              className="flex-1 overflow-y-auto mb-6 min-h-0 max-h-full" 
             >
               {messages.map((message, index) => (
                 <div key={message.id}>
