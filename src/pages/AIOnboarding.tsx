@@ -89,7 +89,7 @@ const AIOnboarding = () => {
   // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   };
 
@@ -97,19 +97,18 @@ const AIOnboarding = () => {
   const scrollToMessage = (messageId: string) => {
     const messageElement = document.getElementById(`message-${messageId}`);
     if (messageElement && chatContainerRef.current) {
-      const containerRect = chatContainerRef.current.getBoundingClientRect();
-      const messageRect = messageElement.getBoundingClientRect();
-      const scrollTop = chatContainerRef.current.scrollTop + messageRect.top - containerRect.top - 20;
-      
-      chatContainerRef.current.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
+      // Scroll the message to the top of the container
+      messageElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
   useEffect(() => {
-    scrollToBottom();
+    // Always scroll to bottom when new messages are added
+    const timer = setTimeout(() => {
+      scrollToBottom();
+    }, 100); // Small delay to ensure DOM is updated
+    
+    return () => clearTimeout(timer);
   }, [messages]);
 
   // Focus input when edit mode is shown
@@ -509,12 +508,11 @@ const AIOnboarding = () => {
       </div>
 
       <main className="flex-1 p-6 flex flex-col">
-        <div className="max-w-[80%] mx-auto w-full flex-1">
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm h-[calc(100vh-160px)] flex flex-col">
+        <div className="max-w-[80%] mx-auto w-full flex-1 flex flex-col">
+          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col flex-1 min-h-0">
             <div 
               ref={chatContainerRef} 
-              className="flex-1 overflow-y-auto mb-6" 
-              style={{ height: 'calc(100% - 80px)' }}
+              className="flex-1 overflow-y-auto mb-6 min-h-0" 
             >
               {messages.map((message, index) => (
                 <div key={message.id}>
