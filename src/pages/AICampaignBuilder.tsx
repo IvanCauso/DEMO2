@@ -74,22 +74,12 @@ const AICampaignBuilder = () => {
   // Auto-scroll to position the latest message at the top of the viewport
   useEffect(() => {
     if (chatContainerRef.current && messages.length > 0) {
-      // Force scroll to bottom first to ensure we have the latest content
-      const scrollHeight = chatContainerRef.current.scrollHeight;
-      chatContainerRef.current.scrollTop = scrollHeight;
-      // Now find the last message element
-      const lastMessage = chatContainerRef.current.lastElementChild;
-      if (lastMessage) {
-        // Set a timeout to ensure DOM has updated
-        setTimeout(() => {
-          // Get the position of the last message relative to the scroll container
-          const containerTop = chatContainerRef.current.getBoundingClientRect().top;
-          const messageTop = lastMessage.getBoundingClientRect().top;
-          const offset = messageTop - containerTop;
-          // Adjust the scroll position
-          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollTop - offset;
-        }, 0);
-      }
+      // Simple scroll to bottom to ensure latest message is visible
+      setTimeout(() => {
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+      }, 100);
     }
   }, [messages, isTyping]);
   // Start the campaign flow
@@ -708,13 +698,13 @@ const AICampaignBuilder = () => {
       <div className="flex flex-1">
         <Sidebar />
         <main className="flex-1 p-6 overflow-y-auto">
-          <div className="max-w-[80%] mx-auto">
+          <div className="max-w-7xl mx-auto">
             <div className="flex items-center mb-6">
               <button className="flex items-center text-gray-500 hover:text-gray-700 mr-4" onClick={handleBack}>
                 <ArrowLeftIcon className="w-4 h-4 mr-1" />
                 Back
               </button>
-              <div>
+              <div className="flex-1">
                 <h1 className="text-2xl font-bold text-gray-900">
                   AI Campaign Builder
                 </h1>
@@ -723,10 +713,12 @@ const AICampaignBuilder = () => {
                 </p>
               </div>
             </div>
-            <Card className="mb-6 flex flex-col">
-              <div className="p-6 flex-1 flex flex-col">
-                {/* Chat Container */}
-                <div ref={chatContainerRef} className="flex-1 overflow-y-auto pr-2 mb-6">
+            <div className="max-w-[80%] mx-auto w-full">
+              <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm flex flex-col h-[900px]">
+                <div 
+                  ref={chatContainerRef} 
+                  className="flex-1 overflow-y-auto mb-6 min-h-0" 
+                >
                   {messages.map((message, index) => <div key={message.id}>{renderMessage(message, index)}</div>)}
                   {isTyping && <div className="flex items-start mb-4">
                       <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mr-3 flex-shrink-0">
@@ -746,9 +738,10 @@ const AICampaignBuilder = () => {
                         </span>
                       </div>
                     </div>}
+                  <div ref={latestMessageRef} />
                 </div>
               </div>
-            </Card>
+            </div>
           </div>
         </main>
       </div>
